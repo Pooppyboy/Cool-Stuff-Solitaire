@@ -1,0 +1,71 @@
+body {
+  margin: 0;
+}
+body main {
+  display: grid;
+  grid-template-columns: 30% auto;
+}
+body main .user_area {
+  height: 100%;
+  grid-column: 1/2;
+  background: lightseagreen;
+}
+body main .user_area #instructions {
+  margin: 20px;
+  color: #6f6f6f;
+}
+body main .user_area #input {
+  height: 4rem;
+  margin: 20px;
+}
+body main .card_area {
+  grid-column: 2/3;
+  background: lightgreen;
+  display: grid;
+  grid-template: 1fr 1fr 13fr/repeat(7, 1fr);
+  gap: 10px;
+  padding: 60px;
+  box-sizing: border-box;
+}
+body main .card_area #main_deck {
+  height: 30px;
+  grid-area: 1/1/2/2;
+  background-color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+body main .card_area #draw_stack {
+  grid-area: 1/2/2/3;
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+body main .card_area #blank_column {
+  grid-area: 1/3/2/4;
+  background-color: transparent;
+}
+body main .card_area .suit_stacks {
+  grid-row: 1/2;
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+body main .card_area #blank_row {
+  grid-area: 2/1/3/8;
+  background-color: transparent;
+}
+body main .card_area .main_stacks {
+  grid-row: 3/16;
+  display: grid;
+  grid-template-rows: repeat(13, 1fr);
+}
+body main .card_area .main_stacks > div {
+  border: 1px solid white;
+  border-radius: 5px;
+  height: 30px;
+}
+body main .card_area .main_stacks .unflipped {
+  background-color: white;
+}
+
+/*# sourceMappingURL=main.css.map */
