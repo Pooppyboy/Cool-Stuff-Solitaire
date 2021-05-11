@@ -40,9 +40,6 @@ body main .card_area .draw_stack {
   border: 1px solid white;
   border-radius: 5px;
 }
-body main .card_area .draw_stack > * {
-  background-color: white;
-}
 body main .card_area #blank_column {
   grid-area: 1/3/2/4;
   background-color: transparent;
@@ -52,6 +49,12 @@ body main .card_area .suit_stack {
   background-color: transparent;
   border: 1px solid white;
   border-radius: 5px;
+}
+body main .card_area .red {
+  color: red;
+}
+body main .card_area .black {
+  color: black;
 }
 body main .card_area #blank_row {
   grid-area: 2/1/3/8;

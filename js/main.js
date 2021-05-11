@@ -21,8 +21,8 @@ let color = ""
 class card {
     constructor(suit, color, rank, flipped = 0) {
         this.suit = suit;
-        this.color = color
         this.rank = rank;
+        this.color = color
         this.flipped = flipped
     }
 }
@@ -58,19 +58,27 @@ function dealCards() {
         for (let j = 0; j < i + 1; j++) { // Iterates i+1 times  within stacks
             mainStacks[i][1][j] = deck.pop() // Insert cards into each main stack
             // createCardHTML(mainStacks[i][j], document.querySelector(`#ms${i+1}`))
-            createCardHTML(mainStacks[i][1][j], mainStacks[i]) // Create HTML of card with card object, array it's in, and index
+            createCardHTML(mainStacks[i][1][j], mainStacks[i][1]) // Create HTML of card with card object, array it's in, and index
         }
         let lastCard = mainStacks[i][1][mainStacks.length - 1] // Assign last card of stack
         // flipCard(lastCard, document.getElementsByClassName(`${lastCard.suit} ${lastCard.rank}`)[0])
-        flipCard(lastCard, mainStacks[i]) // Flip the last card
+        flipCard(lastCard, mainStacks[i][1]) // Flip the last card
     }
 }
 
 // Draw cards from deck into draw stack
 function drawCards() {
-    if (difficulty === "Easy") { // Easy difficulty - draws one card at a time
+    if(deck.length === 0) {
+        if(drawStack !== []){
+            deletePreviousCardHTML(drawStack[drawStack.length - 1])
+            deck = drawStack.reverse()
+            for(let card of deck) card.flipped = 0
+            drawStack = []
+        }
+    } else if (difficulty === "Easy") { // Easy difficulty - draws one card at a time
         drawStack.push(deck.pop()) // Take top card of deck (last card in array) and push to draw stack
-        drawCardHTML(drawStack[drawStack.length - 1])
+        drawCardHTML(drawStack[drawStack.length - 1], drawStack)
+        flipCard(drawStack[drawStack.length - 1], drawStack)
     }
     // // Hard difficulty - draw 3 cards at once
     // else {
@@ -94,12 +102,18 @@ function flipCard(card, cardStack) {
 function moveCard(selectedCard, selectedCardStack, clickedCard, clickedCardStack) {
     // If card is the beginning of a stack (from main stack or pile (hard difficulty))
     if (isStack(selectedCardStack, selectedCardStack.indexOf(selectedCard))) {
-        if (mainStacks.includes(selectedCardStack)) { // If card is from main stack
-            if (mainStacks.includes(clickedCardStack)) { // If moving to another stack in main stack
-                if (moveCheck(selectedCard, clickedCard)) { // Check if move is valid
-                    for (let i = selectedCardStack.indexOf(selectedCard); i < selectedCardStack.length;) {
-                        clickedCardStack.push(selectedCardStack.splice(i, 1))
-                        moveCardHTML(selectedCard, clickedCard, clickedCardStack)
+        for(let stack of mainStacks) {
+            if (stack.includes(selectedCardStack)) { // If card is from main stack
+                for(let stack2 of mainStacks) {
+                    if (stack2.includes(clickedCardStack)) { // If moving to another stack in main stack
+                        if (moveCheck(selectedCard, clickedCard, clickedCardStack)) { // Check if move is valid
+                            for (let i = selectedCardStack.indexOf(selectedCard); i < selectedCardStack.length;) {
+                                deletePreviousCardHTML(selectedCardStack[i])
+                                createCardHTML(selectedCardStack[i], clickedCardStack)
+                                clickedCardStack.push(selectedCardStack.splice(i, 1))
+
+                            }
+                        }
                     }
                 }
             }
@@ -107,9 +121,11 @@ function moveCard(selectedCard, selectedCardStack, clickedCard, clickedCardStack
     }
     // If card is a single card from either main, draw or suit stacks
     else {
+        console.log('not stack')
         if (moveCheck(selectedCard, clickedCard, clickedCardStack)) { // Check if move is valid
-            clickedCardStack.push(selectedCardStack.pop) // Remove pop card from selected and push to clicked
-            moveCardHTML(selectedCard, clickedCard, clickedCardStack) // Generate HTML
+            deletePreviousCardHTML(selectedCard)
+            clickedCardStack.push(selectedCardStack.pop()) // Remove pop card from selected and push to clicked
+            createCardHTML(selectedCard, clickedCardStack) // Generate HTML
         }
     }
     checkWin()
@@ -127,8 +143,13 @@ function moveCheck(selectedCard, clickedCard, clickedCardStack) {
         for (let suit of suitStacks) {
             if (suit.includes(clickedCardStack)) return moveCheckSuitStacks(selectedCard, clickedCard)
         }
-        if (mainStacks.includes(clickedCardStack)) return moveCheckMainStacks(selectedCard, clickedCard)
+        for (let stack of mainStacks) {
+            if (stack.includes(clickedCardStack)) {
+                return moveCheckMainStacks(selectedCard, clickedCard)
+            }
+        }
     }
+    return false
 }
 
 // Check if move to suit stacks is valid
@@ -140,6 +161,7 @@ function moveCheckSuitStacks(selectedCard, clickedCard) {
 
 // Check if move to main stacks is valid
 function moveCheckMainStacks(selectedCard, clickedCard) {
+    if(clickedCard)
     if (selectedCard.color !== clickedCard.color) {
         return selectedCard.rank === clickedCard.rank - 1;
     }
@@ -156,8 +178,7 @@ function lastCardReveal(card, cardStack, cardIndex) {
 // Check if won
 function checkWin() {
     // If each array in each suit has a length of 13
-    console.log(suitStacks[0][1].length)
-    if (suitStacks.every(suit => suit[1].every(stack => stack.length === 13))) console.log("Win")
+    if (suitStacks.every(suit => suit.every(stack => stack[1].length === 13))) console.log("Win")
     // If both deck and draw stack are empty, & all cards in main stacks are flipped
     if (deck === [] && drawStack === []) {
         if (mainStacks.every(stack => stack.every(card => card.flipped))) console.log("Auto Win")
@@ -185,9 +206,7 @@ newGame()
 // Storage variables for selection (card, stack array, & position in stack)
 let selectedCard = 0
 let selectedCardStack = 0
-// let selectedCardIndex = selectedCardStack.indexOf(selectedCard)
 let selectedCardHTML = 0
-let selectedCardStackHTML = selectedCardHTML.parentNode
 
 // Selectors for stacks
 let $cardSelect = document.querySelectorAll(".card")
@@ -207,16 +226,24 @@ $deckHTML.addEventListener("click", function (event) {
 
 // Select Cards from HTML and translating to game script
 $cardSelect.forEach(ele => ele.addEventListener('click', function (event) {
+    console.log($cardSelect)
     if (selectedCardHTML === event.target) { // if already selected, deselect
         event.target.classList.remove('selected')
         selectedCardHTML = 0
         selectedCard = 0
         selectedCardStack = 0
     } else if (selectedCardHTML === 0) { //if nothing selected
-        event.target.classList.add('selected')
-        selectedCardHTML = event.target
-        selectedCard = selectedCardFromHTML(event.target)
-        selectedCardStack = selectedCardStackFromHTML(event.target)
+        if (!selectedCardFromHTML(event.target).flipped) { // if card is not flipped
+            if (selectedCardStackFromHTML(event.target).indexOf(selectedCardFromHTML(event.target)) === selectedCardStackFromHTML(event.target).length - 1) { // if last card of stack
+                flipCard(selectedCardFromHTML(event.target), selectedCardStackFromHTML(event.target))
+            }
+        }
+        else { // if flipped
+            event.target.classList.add('selected')
+            selectedCardHTML = event.target
+            selectedCard = selectedCardFromHTML(event.target)
+            selectedCardStack = selectedCardStackFromHTML(event.target)
+        }
     } else { // if something selected, and clicked something else
         moveCard(selectedCard, selectedCardStack, selectedCardFromHTML(event.target), selectedCardStackFromHTML(event.target))
         selectedCardHTML.classList.remove('selected')
@@ -236,9 +263,9 @@ function selectedCardFromHTML(cardHTML) {
 
     } else { // if card from main stacks
         for (let stack of mainStacks) {
-            for (let array of stack[1]) {
+            for (let card of stack[1]) {
                 if (card.suit == selectedCardSuit && card.rank == selectedCardRank) {
-                    return mainStacks[mainStacks.indexOf(stack)][stack.indexOf(card)]
+                    return mainStacks[mainStacks.indexOf(stack)][1][stack[1].indexOf(card)]
                 }
             }
         }
@@ -264,33 +291,42 @@ function selectedCardStackFromHTML(cardHTML) {
     }
 }
 
+// Finds card html location from value in array
 function cardDivFromCard(card) {
     return document.getElementsByClassName(`${card.suit} ${card.rank}`)[0]
 }
 
+// Finds stack html location from array
 function stackDivFromStack(cardStack) {
-    if (mainStacks.includes(cardStack) || suitStacks.includes(cardStack)) {
-        return document.getElementsByClassName(`${cardStack[0]}`)[0]
-    } else {
-        return document.getElementsByClassName(`${cardStack}`)[0]
+    // Check if main stack
+    for (let stack of mainStacks) {
+        if (stack.includes(cardStack)) {
+            return document.getElementsByClassName(`${stack[0]}`)[0]
+        }
+    } // Check if suit stack
+    for (let stack in suitStacks) {
+        if (stack.includes(cardStack)) {
+            return document.getElementsByClassName(`${stack[0]}`)[0]
+        }
     }
+    // Else if draw stack
+    return document.getElementsByClassName("draw_stack")[0]
 }
-
 
 // Draw cards from deck
-function drawCardHTML(card) {
-    $drawStackHTML.lastChild.remove()
-    createCardHTML(card, $drawStackHTML)
+function drawCardHTML(card, cardStack) {
+    if($drawStackHTML.lastChild) $drawStackHTML.lastChild.remove()
+    createCardHTML(card, stackDivFromStack(cardStack))
 }
 
-// Creating cards in new location, and remove old location
+// Creating cards in html location from card value and array
 function createCardHTML(card, cardStack) {
     let newCard = document.createElement("div")
     if (!card.flipped) {
-        stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} card notFlipped`
+        stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} ${card.color} card notFlipped`
     } else {
         newCard.innerHTML = `.${card.suit} ${card.rank}`
-        stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} card`
+        stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} ${card.color} card`
     }
 }
 
@@ -301,13 +337,7 @@ function flipCardHTML(card) {
     } else cardDivFromCard(card).classList.add("notFlipped")
 }
 
-function moveCardHTML(card, newStack, newStackIndex, oldStack = 0, oldStackIndex = 0) {
-    newStack.insertAdjacentElement("afterend", card)
-    deletePreviousCardHTML(card, oldStack, oldStackIndex)
-    createCardHTML(card, newStack)
-}
-
-function deletePreviousCardHTML(card, oldStack, oldStackIndex) {
-
+function deletePreviousCardHTML(card) {
+    cardDivFromCard(card).remove()
 }
 
