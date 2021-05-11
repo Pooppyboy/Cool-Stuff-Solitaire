@@ -390,3 +390,45 @@ function deletePreviousCardHTML(card) {
     cardSpanFromCard(card).remove()
 }
 
+/* DOM for CSS inputs */
+let $cssInput = document.querySelector("#input")
+let $submit = document.querySelector("#submit")
+
+$submit.addEventListener('click', submitCSS)
+
+function submitCSS(event) {
+    // Define selectedCard and position it is moving to
+    let command = $cssInput.value
+    let selectorCSS = (/(.diamond|.club|.heart|.spade|.deck)/.exec(command))[0].substring(1)
+    let rankCSS = (/\d{1,2}/.exec(command))
+    let gridCSS = (/{([^)]*?)}/m.exec(command))[0].substring(1, (/{([^)]*?)}/m.exec(command))[0].length - 1).trim()
+    let gridColumnCommand = (/column \d{1,2} ?\/ ?\d{1,2}/m.exec(gridCSS))[0].substring(6).trim()
+    let gridRowCommand = (/row \d{1,2} ?\/ ?\d{1,2}/m.exec(gridCSS))[0].substring(3).trim()
+    let gridColumn = [Number(/\d{1,2}/.exec(gridColumnCommand)[0]), Number(/\/ ?\d{1,2}/.exec(gridColumnCommand)[0].substring(1).trim())]
+    let gridRow = [Number(/\d{1,2}/.exec(gridRowCommand)[0]), Number(/\/ ?\d{1,2}/.exec(gridRowCommand)[0].substring(1).trim())]
+
+    /* Translate grid to position */
+
+    // Draw from deck
+    if (selectorCSS === "deck" && gridRow[0] === 1 && gridRow[1] === 2 && gridColumn[0] === 1 && gridColumn[1] === 2) {
+        console.log("draw")
+        drawCards()
+    }
+    else {
+        let cssCard = selectedCardFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
+        let cssCardStack = selectedCardStackFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
+        let clickedCSSCard
+        let clickedCSSStack
+        for (let i = 0; i < 7; i++) {
+            if(gridRow[0] >= 3 && gridRow[0] <= 15 && gridRow[1] >= 4 && gridRow[0] <= 16 && gridColumn[0] === (i + 1) && gridColumn[1] === (i + 2)) {
+                clickedCSSCard = mainStacks[i][1][gridRow[0] - 3]
+                clickedCSSStack = mainStacks[i]
+            }
+        }
+
+         // = selectedCardFromHTML(cardSpanFromCard(clickedCSSCard))
+        console.log(cssCard, cssCardStack, clickedCSSCard, clickedCSSStack)
+        moveCard(cssCard, cssCardStack, clickedCSSCard, clickedCSSStack)
+    }
+
+}
