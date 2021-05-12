@@ -15,7 +15,7 @@
             <h1>Instructions:</h1>
             <h3>Use grid-columns & grid-rows to determine where the selected card is going.</h3>
             <h4>Example:<br>
-                #heart-2 {<br>
+                .heart 2 {<br>
                 grid-column 1 / 2<br>
                 grid-row 2 / 6<br>
                 }
@@ -24,8 +24,11 @@
         <textarea id="input" placeholder="CSS grid codes here" rows="4"></textarea>
         <button id="submit">Move my card!</button>
     </div>
+<!--    <canvas id="grid"></canvas>-->
     <div class="card_area">
-        <div class="main_deck"></div>
+        <div class="main_deck">
+            <img src="assets/card_back.png" alt="card_back" class="card_back"/>
+        </div>
         <div class="draw_stack"></div>
         <div id="blank_column"></div>
         <div class="suit_stack diamond"></div>

@@ -131,7 +131,6 @@ function moveCard(selectedCard, selectedCardStack, clickedCard, clickedCardStack
                     }
                 }
                 if (selectedCardStack === stack) {
-                    console.log(stack)
                     if (stack[1].length >= 1) {
                         createCardHTML(stack[1][stack[1].length - 1], stack)
                     }
@@ -201,14 +200,6 @@ function newGame() {
 }
 
 newGame()
-// shuffle()
-// console.log(deck)
-// assignCards()
-// drawCards()
-// console.log(deck)
-// console.log(mainStacks)
-// console.log(drawStack)
-// checkWin()
 
 /* DOM for card HTML creation */
 
@@ -236,23 +227,23 @@ $deckHTML.addEventListener("click", function (event) {
 // Select Cards from HTML and translating to game script
 function selectCard(event) {
     if (selectedCardHTML === event.target) { // if already selected, deselect
-        event.target.classList.remove('selected')
+        event.currentTarget.classList.remove('selected')
         selectedCardHTML = 0
         selectedCard = 0
         selectedCardStack = 0
     } else if (selectedCardHTML === 0) { //if nothing selected
-        if (!selectedCardFromHTML(event.target).flipped) { // if card is not flipped
-            if (selectedCardStackFromHTML(event.target)[1].indexOf(selectedCardFromHTML(event.target)) === selectedCardStackFromHTML(event.target)[1].length - 1) { // if last card of stack
-                flipCard(selectedCardFromHTML(event.target), selectedCardStackFromHTML(event.target))
+        if (!selectedCardFromHTML(event.currentTarget).flipped) { // if card is not flipped
+            if (selectedCardStackFromHTML(event.currentTarget)[1].indexOf(selectedCardFromHTML(event.currentTarget)) === selectedCardStackFromHTML(event.currentTarget)[1].length - 1) { // if last card of stack
+                flipCard(selectedCardFromHTML(event.currentTarget), selectedCardStackFromHTML(event.currentTarget))
             }
         } else { // if flipped
-            event.target.classList.add('selected')
+            event.currentTarget.classList.add('selected')
             selectedCardHTML = event.target
-            selectedCard = selectedCardFromHTML(event.target)
-            selectedCardStack = selectedCardStackFromHTML(event.target)
+            selectedCard = selectedCardFromHTML(event.currentTarget)
+            selectedCardStack = selectedCardStackFromHTML(event.currentTarget)
         }
     } else { // if something selected, and clicked something else
-        moveCard(selectedCard, selectedCardStack, selectedCardFromHTML(event.target), selectedCardStackFromHTML(event.target))
+        moveCard(selectedCard, selectedCardStack, selectedCardFromHTML(event.currentTarget), selectedCardStackFromHTML(event.currentTarget))
         selectedCardHTML.classList.remove('selected')
         selectedCardHTML = 0
         selectedCard = 0
@@ -375,12 +366,13 @@ function drawCardHTML(card, cardStack) {
 
 // Creating cards in html location from card value and array
 function createCardHTML(card, cardStack) {
-
     let newCard = document.createElement("span")
     if (!card.flipped) {
+        newCard.appendChild(createCardBack())
         stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} ${card.color} card notFlipped`
     } else {
-        newCard.innerHTML = `.${card.suit} ${card.rank}`
+        newCard.appendChild(createSymbol(card))
+        newCard.innerHTML += `.${card.suit} ${card.rank}`
         stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} ${card.color} card`
     }
 }
@@ -388,12 +380,35 @@ function createCardHTML(card, cardStack) {
 function flipCardHTML(card) {
     if (cardSpanFromCard(card).classList.contains("notFlipped")) {
         cardSpanFromCard(card).classList.remove("notFlipped")
-        cardSpanFromCard(card).innerHTML = `.${card.suit} ${card.rank}`
-    } else cardSpanFromCard(card).classList.add("notFlipped")
+        cardSpanFromCard(card).firstChild.remove()
+        cardSpanFromCard(card).appendChild(createSymbol(card))
+        cardSpanFromCard(card).innerHTML += `.${card.suit} ${card.rank}`
+    } else {
+        cardSpanFromCard(card).appendChild(createCardBack())
+        cardSpanFromCard(card).classList.add("notFlipped")
+    }
 }
 
 function deletePreviousCardHTML(card) {
     cardSpanFromCard(card).remove()
+}
+
+// Create suit symbols
+function createSymbol(card) {
+    let img = document.createElement('img')
+    img.src = `assets/${card.suit}.png`
+    img.alt = `${card.suit}`
+    img.className = "symbols"
+    return img
+}
+
+// Create card backing
+function createCardBack() {
+    let img = document.createElement('img')
+    img.src = `assets/card_back.png`
+    img.alt = `card_back`
+    img.className = "card_back"
+    return img
 }
 
 /* DOM for CSS inputs */
@@ -405,36 +420,52 @@ $submit.addEventListener('click', submitCSS)
 function submitCSS(event) {
     // Define selectedCard and position it is moving to
     let command = $cssInput.value
-    let selectorCSS = (/(.diamond|.club|.heart|.spade|.deck)/.exec(command))[0].substring(1)
+    let selectorCSS = (/(.diamond|.club|.heart|.spade|.deck|.blank)/.exec(command))[0].substring(1)
     let rankCSS = (/\d{1,2}/.exec(command))
     let gridCSS = (/{([^)]*?)}/m.exec(command))[0].substring(1, (/{([^)]*?)}/m.exec(command))[0].length - 1).trim()
-    let gridColumnCommand = (/column \d{1,2} ?\/ ?\d{1,2}/m.exec(gridCSS))[0].substring(6).trim()
-    let gridRowCommand = (/row \d{1,2} ?\/ ?\d{1,2}/m.exec(gridCSS))[0].substring(3).trim()
+    let gridColumnCommand = (/grid-column \d{1,2} ?\/ ?\d{1,2} ?;/m.exec(gridCSS))[0].substring(11).trim()
+    let gridRowCommand = (/grid-row \d{1,2} ?\/ ?\d{1,2}/m.exec(gridCSS))[0].substring(8).trim()
     let gridColumn = [Number(/\d{1,2}/.exec(gridColumnCommand)[0]), Number(/\/ ?\d{1,2}/.exec(gridColumnCommand)[0].substring(1).trim())]
     let gridRow = [Number(/\d{1,2}/.exec(gridRowCommand)[0]), Number(/\/ ?\d{1,2}/.exec(gridRowCommand)[0].substring(1).trim())]
 
     /* Translate grid to position */
 
     // Draw from deck
-    if (selectorCSS === "deck" && gridRow[0] === 1 && gridRow[1] === 2 && gridColumn[0] === 1 && gridColumn[1] === 2) {
-        console.log("draw")
+    if (selectorCSS === "deck" && gridRow[0] === 1 && gridRow[1] === 2 && gridColumn[0] === 2 && gridColumn[1] === 3) {
         drawCards()
-    }
-    else {
+    } else {
         let cssCard = selectedCardFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
         let cssCardStack = selectedCardStackFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
         let clickedCSSCard
         let clickedCSSStack
+        // Move to main stack
         for (let i = 0; i < 7; i++) {
-            if(gridRow[0] >= 3 && gridRow[0] <= 15 && gridRow[1] >= 4 && gridRow[0] <= 16 && gridColumn[0] === (i + 1) && gridColumn[1] === (i + 2)) {
-                clickedCSSCard = mainStacks[i][1][gridRow[0] - 3]
+            if (gridRow[0] >= 3 && gridRow[0] < 16 && gridRow[1] > 3 && gridRow[0] <= 16 && gridColumn[0] === (i + 1) && gridColumn[1] === (i + 2)) {
+                if (mainStacks[i][1][gridRow[0] - 4]) {
+                    clickedCSSCard = mainStacks[i][1][gridRow[0] - 4]
+                } else clickedCSSCard = 0
                 clickedCSSStack = mainStacks[i]
             }
         }
-
-         // = selectedCardFromHTML(cardSpanFromCard(clickedCSSCard))
-        console.log(cssCard, cssCardStack, clickedCSSCard, clickedCSSStack)
+        // Move to suit stack
+        for (let i = 0; i < 4; i++) {
+            if (gridRow[0] === 1 && gridRow[1] === 2 && gridColumn[0] === (i + 4) && gridColumn[1] === (i + 5)) {
+                if (suitStacks[i][1][gridColumn[0] - 4]) {
+                    clickedCSSCard = suitStacks[i][1][gridColumn[0] - 4]
+                } else clickedCSSCard = 0
+                clickedCSSStack = suitStacks[i]
+            }
+        }
         moveCard(cssCard, cssCardStack, clickedCSSCard, clickedCSSStack)
     }
 
 }
+
+// HTML Canvas to draw grid lines
+const grid = document.getElementById("grid");
+const ctx = grid.getContext("2d");
+
+ctx.beginPath();
+ctx.moveTo(0, 0);
+ctx.lineTo(100, 90);
+ctx.stroke();
