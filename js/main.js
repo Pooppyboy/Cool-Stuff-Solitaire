@@ -130,6 +130,12 @@ function moveCard(selectedCard, selectedCardStack, clickedCard, clickedCardStack
                         deletePreviousCardHTML(stack[1][stack[1].indexOf(selectedCard) - 1])
                     }
                 }
+                if (selectedCardStack === stack) {
+                    console.log(stack)
+                    if (stack[1].length >= 1) {
+                        createCardHTML(stack[1][stack[1].length - 1], stack)
+                    }
+                }
             }
         }
     }
