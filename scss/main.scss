@@ -1,9 +1,66 @@
 body {
   margin: 0;
 
+  .start_menu {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: black;
+    opacity: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+
+    .container {
+      position: absolute;
+      height: 50%;
+      width: 50%;
+      top: 25%;
+      left: 25%;
+      background-color: black;
+      z-index: 2;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+
+      #welcome {
+        font-size: 3rem;
+        margin: 20px;
+      }
+
+      #choose {
+        font-size: 2rem;
+        margin: 20px;
+      }
+
+      #buttons {
+        display: flex;
+        justify-content: space-around;
+
+        & > div {
+          background-color: grey;
+          border: white 1px solid;
+          padding: 10px;
+
+          &:hover {
+            background-color: #454545;
+          }
+        }
+      }
+    }
+
   main {
+    height: 100%;
+    width: 100%;
     display: grid;
     grid-template-columns: 27% auto;
+    z-index: 0;
 
     .user_area {
       height: 100%;
@@ -13,7 +70,6 @@ body {
       #instructions {
         margin: 20px;
         color: #6f6f6f;
-
       }
 
       #input {
@@ -30,7 +86,7 @@ body {
       grid-column: 2/3;
       background: lightgreen;
       display: grid;
-      grid-template: 50px 50px 650px / repeat(7, 120px);
+      grid-template: 40px 40px 520px / repeat(7, 120px);
       gap: 10px;
       padding: 60px;
       box-sizing: border-box;
@@ -113,7 +169,7 @@ body {
 
 .card {
   background-color: white;
-  height: 50px;
+  height: 40px;
   width: 120px;
   border: 1px solid white;
   border-radius: 5px;
@@ -130,12 +186,12 @@ body {
 }
 
 .card_back {
-  height: 50px;
+  height: 40px;
   width: 120px;
   border: 1px solid white;
 }
 
 #grid {
   //color: white;
-  //z-index: -100;
+  //z-index: 100;
 }

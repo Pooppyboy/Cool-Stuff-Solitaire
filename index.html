@@ -9,11 +9,22 @@
     <title>Cool Stuff Solitaire - Because EVERYONE loves CSS!</title>
 </head>
 <body>
+<div class="container">
+    <span id="welcome">Welcome to Cool Stuff Solitaire</span>
+    <span id="choose">Choose to play using CSS grid commands or, play it the original (boring, pointless) way.</span>
+    <div id="buttons">
+    <div id="grid-mode"><span>CSS Grid</span></div>
+    <div id="normal-mode"><span>Normal (Loser)</span></div>
+    </div>
+</div>
+<div class="start_menu"></div>
+<audio id="cardShuffle" muted  src="assets/shuffle.mp3"></audio>
 <main>
     <div class="user_area">
         <div id="instructions">
             <h1>Instructions:</h1>
             <h3>Use grid-columns & grid-rows to determine where the selected card is going.</h3>
+            <h3>Selectors: .deck, .blank, & .${suits}</h3>
             <h4>Example:<br>
                 .heart 2 {<br>
                 grid-column 1 / 2<br>

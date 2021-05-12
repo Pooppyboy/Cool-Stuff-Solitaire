@@ -1,9 +1,58 @@
 body {
   margin: 0;
 }
+body .start_menu {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: black;
+  opacity: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+body .container {
+  position: absolute;
+  height: 50%;
+  width: 50%;
+  top: 25%;
+  left: 25%;
+  background-color: black;
+  z-index: 2;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+body .container #welcome {
+  font-size: 3rem;
+  margin: 20px;
+}
+body .container #choose {
+  font-size: 2rem;
+  margin: 20px;
+}
+body .container #buttons {
+  display: flex;
+  justify-content: space-around;
+}
+body .container #buttons > div {
+  background-color: grey;
+  border: white 1px solid;
+  padding: 10px;
+}
+body .container #buttons > div:hover {
+  background-color: #454545;
+}
 body main {
+  height: 100%;
+  width: 100%;
   display: grid;
   grid-template-columns: 27% auto;
+  z-index: 0;
 }
 body main .user_area {
   height: 100%;
@@ -22,7 +71,7 @@ body main .card_area {
   grid-column: 2/3;
   background: lightgreen;
   display: grid;
-  grid-template: 50px 50px 650px/repeat(7, 120px);
+  grid-template: 40px 40px 520px/repeat(7, 120px);
   gap: 10px;
   padding: 60px;
   box-sizing: border-box;
@@ -75,7 +124,7 @@ body main .card_area .main_stack > span {
 
 .card {
   background-color: white;
-  height: 50px;
+  height: 40px;
   width: 120px;
   border: 1px solid white;
   border-radius: 5px;
@@ -91,7 +140,7 @@ body main .card_area .main_stack > span {
 }
 
 .card_back {
-  height: 50px;
+  height: 40px;
   width: 120px;
   border: 1px solid white;
 }

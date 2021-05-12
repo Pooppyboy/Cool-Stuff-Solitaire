@@ -15,6 +15,32 @@ let suitStacks = [
 ]
 
 /* Game script */
+// Start menu
+// Selectors for buttons
+let $gridButton = document.getElementById("grid-mode")
+let $normalButton = document.getElementById("normal-mode")
+let $startMenu = document.querySelector(".start_menu")
+let $container = document.querySelector(".container")
+
+// DOM listeners
+$gridButton.addEventListener('click', gridMode)
+$normalButton.addEventListener('click', normalMode)
+
+function gridMode () {
+    $startMenu.style.display = "none"
+    $container.style.display = "none"
+    document.getElementsByClassName("card_area")[0].style.pointerEvents = "none"
+}
+
+function normalMode () {
+    $startMenu.style.display = "none"
+    $container.style.display = "none"
+    document.querySelector(".user_area").style.display = "none"
+    document.getElementsByTagName("main")[0].style.display = "flex"
+    document.getElementsByClassName("card_area")[0].style.justifyContent = "center"
+    document.getElementsByClassName("card_area")[0].style.width = "100%"
+}
+
 // Create deck of 52 Cards
 const suits = ["diamond", "club", "heart", "spade"]
 let color = ""
@@ -51,6 +77,8 @@ function shuffle() {
         deck[i] = deck[j] // Replace ith card with jth card
         deck[j] = temp // Put ith card in jth position
     }
+    console.log(document.getElementById("cardShuffle"))
+    document.getElementById("cardShuffle").play() // Plays shuffle audio
 }
 
 // Deal cards to main stacks
@@ -226,7 +254,15 @@ $deckHTML.addEventListener("click", function (event) {
 
 // Select Cards from HTML and translating to game script
 function selectCard(event) {
-    if (selectedCardHTML === event.target) { // if already selected, deselect
+    if (selectedCardHTML === event.currentTarget) { // if already selected, deselect
+        // For double clicking to auto suit stack
+        // for(let stack of suitStacks) {
+        //     if (stack[0] === selectedCard.suit) {
+        //         let cardDoubleClick = stack[1][stack[1].length - 1]
+        //         if(!cardDoubleClick) cardDoubleClick = 0
+        //         moveCard(selectedCard, selectedCardStack, cardDoubleClick, stack)
+        //     }
+        // }
         event.currentTarget.classList.remove('selected')
         selectedCardHTML = 0
         selectedCard = 0
@@ -461,11 +497,11 @@ function submitCSS(event) {
 
 }
 
-// HTML Canvas to draw grid lines
-const grid = document.getElementById("grid");
-const ctx = grid.getContext("2d");
-
-ctx.beginPath();
-ctx.moveTo(0, 0);
-ctx.lineTo(100, 90);
-ctx.stroke();
+// // HTML Canvas to draw grid lines
+// const grid = document.getElementById("grid");
+// const ctx = grid.getContext("2d");
+//
+// ctx.beginPath();
+// ctx.moveTo(0, 0);
+// ctx.lineTo(100, 90);
+// ctx.stroke();
