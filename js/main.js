@@ -254,6 +254,7 @@ $newGame.addEventListener('click', () => {
 function win() {
     document.getElementsByClassName("blur")[0].style.display = "flex"
     document.getElementsByClassName("win")[0].style.display = "flex"
+    document.getElementById('rick').pause()
     document.getElementById("avengers").play()
 }
 
