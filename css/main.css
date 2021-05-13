@@ -114,6 +114,9 @@ body main .user_area #instructions {
 body main .user_area #instructions > p {
   font-size: 2rem;
 }
+body main .user_area audio {
+  margin: 0 40px;
+}
 body main .user_area .input_area {
   margin: 20px 10px;
   display: flex;

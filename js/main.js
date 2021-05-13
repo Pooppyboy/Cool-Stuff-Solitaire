@@ -30,6 +30,7 @@ function gridMode() {
     $startMenu.style.display = "none"
     document.getElementsByClassName("card_area")[0].style.pointerEvents = "none"
     document.getElementById("laugh").play()
+    setTimeout(function () {document.getElementById("rick").play()},3000)
     numberGridLine();
     newGame()
 }
@@ -39,7 +40,9 @@ function normalMode() {
     document.getElementById("instructions").innerHTML = "<p>Have it your way, peasant.</p>"
     document.getElementsByClassName("input_area")[0].style.display = "none"
     document.getElementById("grid").style.display = "none"
+    document.getElementById("rick").style.display = "block"
     document.getElementById("nani").play()
+    setTimeout(function () {document.getElementById("rick").play()},3000)
     newGame()
 }
 
