@@ -30,6 +30,7 @@ function gridMode () {
     $startMenu.style.display = "none"
     document.getElementsByClassName("card_area")[0].style.pointerEvents = "none"
     document.getElementById("laugh").play()
+    numberGridLine();
     newGame()
 }
 
@@ -37,6 +38,7 @@ function normalMode () {
     $startMenu.style.display = "none"
     document.getElementById("instructions").innerHTML = "<p>Have it your way, peasant.</p>"
     document.getElementsByClassName("input_area")[0].style.display = "none"
+    document.getElementById("grid").style.display = "none"
     document.getElementById("nani").play()
     newGame()
 }
@@ -124,6 +126,7 @@ function flipCard(card) {
     if (card.flipped === 1) card.flipped = 0
     else card.flipped = 1
     flipCardHTML(card)
+    checkWin()
 }
 
 // Moving card
@@ -547,11 +550,64 @@ function submitCSS(event) {
 
 }
 
-// // HTML Canvas to draw grid lines
-// const grid = document.getElementById("grid");
-// const ctx = grid.getContext("2d");
-//
-// ctx.beginPath();
-// ctx.moveTo(0, 0);
-// ctx.lineTo(100, 90);
-// ctx.stroke();
+// HTML Canvas to draw grid lines
+let w = innerWidth * 0.73;
+let h = innerHeight;
+let canvasElementId = 'grid';
+let canvas = document.getElementById(canvasElementId);
+let ctx = canvas.getContext('2d');
+
+canvas.width  = w;
+canvas.height = h;
+
+function drawGrid(ctx, w, h) {
+    // Y - axis
+    ctx.beginPath();
+    for (let x = 55; x <= 967.1; x += 130.3) {
+        ctx.moveTo(x, 55);
+        ctx.lineTo(x, 680);
+    }
+    ctx.strokeStyle = 'rgb(0,150,0)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // X - axis
+    ctx.beginPath();
+    for (let y = 55; y <= h - 51; y += 52) {
+        ctx.moveTo(55, y);
+        ctx.lineTo(967.1, y);
+    }
+    ctx.strokeStyle = 'rgb(0,150,0)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
+
+// Number grid lines
+function numberGridLine() {
+    let $cardArea = document.getElementsByClassName('card_area')[0]
+// X-axis
+    for (let i = 0; i < 7; i++) {
+        let gridNumbers = document.createElement("span")
+        gridNumbers.className = "grid X"
+        gridNumbers.innerHTML = `${i + 1}`
+        gridNumbers.style.top = "15px"
+        gridNumbers.style.left = `${370 + ((i + 1) * 130)}px`
+
+        $cardArea.appendChild(gridNumbers)
+    }
+
+// Y-axis
+    for (let i = 0; i < 12; i++) {
+        let gridNumbers = document.createElement("span")
+        gridNumbers.className = "grid Y"
+        gridNumbers.innerHTML = `${i + 1}`
+        gridNumbers.style.top = `${10 + ((i + 1) * 52)}px`
+        gridNumbers.style.left = "400px"
+
+        $cardArea.appendChild(gridNumbers)
+    }
+}
+
+
+drawGrid(ctx, w, h);
+

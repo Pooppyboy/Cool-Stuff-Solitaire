@@ -159,10 +159,11 @@ body {
       grid-column: 2/3;
       background: lightgreen;
       display: grid;
-      grid-template: 40px 40px 520px / repeat(7, 120px);
+      grid-template: 42px 42px 536px / repeat(7, 120px);
       gap: 10px;
       padding: 60px;
       box-sizing: border-box;
+
 
       .main_deck {
         width: 122px;
@@ -270,6 +271,16 @@ body {
 }
 
 #grid {
-  //color: white;
-  //z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 27%;
+  color: white;
+  z-index: 0;
+}
+
+.grid {
+  position: absolute;
+  color: darkgreen;
+  font-family: "Fira Code", monospace;
+  font-size: 25px;
 }
