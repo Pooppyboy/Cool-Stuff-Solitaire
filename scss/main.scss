@@ -1,28 +1,109 @@
 body {
   margin: 0;
+  font-family: "Fira Code", monospace;
+  font-size: 10px;
+  height: 100%;
+
+  .start_menu {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: black;
+    z-index: 2;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    #welcome {
+      width: 70%;
+      font-size: 3rem;
+      margin-bottom: 70px;
+    }
+
+    #choose {
+      font-size: 2rem;
+      margin-bottom: 100px;
+      width: 70%;
+    }
+
+    #buttons {
+      display: flex;
+      width: 50%;
+      justify-content: space-around;
+
+      & > div {
+        background-color: grey;
+        border: white 1px solid;
+        padding: 10px;
+        border-radius: 5px;
+        width: 30%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+
+        &:hover {
+          background-color: #454545;
+        }
+      }
+    }
+  }
 
   main {
+    height: 100%;
+    width: 100%;
     display: grid;
     grid-template-columns: 27% auto;
+    z-index: 0;
 
     .user_area {
       height: 100%;
       grid-column: 1/2;
-      background: lightseagreen;
+      background: #0f5a56;
+      display: flex;
+      flex-direction: column;
+
+      & > img {
+        width: 100%;
+      }
 
       #instructions {
-        margin: 20px;
-        color: #6f6f6f;
+        margin: 0 20px;
+        color: #ffffff;
 
+        & > p {
+          font-size: 2rem;
+        }
       }
 
-      #input {
-        height: 4rem;
-        margin: 20px;
-      }
+      .input_area {
+        margin: 20px 10px;
+        display: flex;
+        justify-content: space-between;
 
-      #button {
+        #input {
+          height: 4rem;
+          width: 78%;
+        }
 
+        & > button {
+          background-color: #e2e2e2;
+          height: 70px;
+          width: 20%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          & > span {
+            width: 80%;
+            font-family: "Fira Code", monospace;
+          }
+        }
       }
     }
 
@@ -30,29 +111,27 @@ body {
       grid-column: 2/3;
       background: lightgreen;
       display: grid;
-      grid-template: 50px 50px 650px / repeat(7, 120px);
+      grid-template: 40px 40px 520px / repeat(7, 120px);
       gap: 10px;
       padding: 60px;
       box-sizing: border-box;
 
       .main_deck {
+        width: 122px;
         grid-area: 1 / 1 / 2 / 2;
-        background-color: white;
+        background-color: transparent;
         border: 1px solid white;
         border-radius: 5px;
         display: flex;
       }
 
       .draw_stack {
+        width: 122px;
         grid-area: 1 / 2 / 2 / 3;
         background-color: transparent;
         border: 1px solid white;
         border-radius: 5px;
         display: flex;
-        //grid-template-columns: repeat(3, 1fr);
-
-        & > * {
-        }
       }
 
       #blank_column {
@@ -61,31 +140,35 @@ body {
       }
 
       .suit_stack {
+        width: 122px;
         grid-row: 1 / 2;
         background-color: transparent;
         border: 1px solid white;
         border-radius: 5px;
-        display: flex;
+
+        & > .symbols {
+          z-index: 0;
+          height: 25px;
+          width: 25px;
+          position: relative;
+          top: 6px;
+          left: 48px;
+        }
+
+        & > .card {
+          z-index: 1;
+          position: relative;
+          bottom: 31px;
+          text-align: center;
+        }
       }
 
       .red {
-        color: red;
+        color: #dd2e44;
       }
 
-      .black{
+      .black {
         color: black;
-      }
-
-      .diamond {
-      }
-
-      .club {
-      }
-
-      .heart {
-      }
-
-      .spade {
       }
 
       #blank_row {
@@ -108,20 +191,23 @@ body {
   }
 }
 
-.notFlipped {
-}
-
 .card {
   background-color: white;
-  height: 50px;
+  height: 40px;
   width: 120px;
   border: 1px solid white;
   border-radius: 5px;
   display: flex;
   align-items: center;
+  z-index: 1;
 
   .symbols {
     height: 25px;
+  }
+
+  & > span {
+    font-family: 'Play', sans-serif;
+    font-size: 25px;
   }
 }
 
@@ -130,12 +216,12 @@ body {
 }
 
 .card_back {
-  height: 50px;
+  height: 40px;
   width: 120px;
   border: 1px solid white;
 }
 
 #grid {
   //color: white;
-  //z-index: -100;
+  //z-index: 100;
 }
