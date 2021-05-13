@@ -48,6 +48,48 @@ body .start_menu #buttons > div {
 body .start_menu #buttons > div:hover {
   background-color: #454545;
 }
+body .blur {
+  display: none;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  opacity: 80%;
+  z-index: 3;
+}
+body .win {
+  display: none;
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  height: 70%;
+  width: 70%;
+  background-color: black;
+  z-index: 4;
+  color: white;
+  flex-direction: column;
+  align-items: center;
+}
+body .win > p {
+  font-size: 100px;
+}
+body .win > div {
+  height: 40%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: grey;
+  border-radius: 10px;
+  border: white 2px solid;
+  margin-bottom: 50px;
+}
+body .win > div:hover {
+  background-color: #555555;
+}
+body .win > div > span {
+  font-size: 3rem;
+}
 body main {
   height: 100%;
   width: 100%;
