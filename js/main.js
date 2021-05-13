@@ -586,22 +586,22 @@ function drawGrid(ctx, w, h) {
 function numberGridLine() {
     let $cardArea = document.getElementsByClassName('card_area')[0]
 // X-axis
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
         let gridNumbers = document.createElement("span")
         gridNumbers.className = "grid X"
         gridNumbers.innerHTML = `${i + 1}`
         gridNumbers.style.top = "15px"
-        gridNumbers.style.left = `${370 + ((i + 1) * 130)}px`
+        gridNumbers.style.left = `${307 + ((i + 1) * 130)}px`
 
         $cardArea.appendChild(gridNumbers)
     }
 
 // Y-axis
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 13; i++) {
         let gridNumbers = document.createElement("span")
         gridNumbers.className = "grid Y"
         gridNumbers.innerHTML = `${i + 1}`
-        gridNumbers.style.top = `${10 + ((i + 1) * 52)}px`
+        gridNumbers.style.top = `${-12 + ((i + 1) * 52)}px`
         gridNumbers.style.left = "400px"
 
         $cardArea.appendChild(gridNumbers)
