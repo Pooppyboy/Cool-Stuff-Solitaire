@@ -13,7 +13,7 @@ let suitStacks = [
     ["heart", []],
     ["spade", []]
 ]
-let ranks = ["A",2,3,4,5,6,7,8,9,10,"J","Q","K"]
+let ranks = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]
 
 /* Game script */
 // Start menu
@@ -26,7 +26,7 @@ let $startMenu = document.querySelector(".start_menu")
 $gridButton.addEventListener('click', gridMode)
 $normalButton.addEventListener('click', normalMode)
 
-function gridMode () {
+function gridMode() {
     $startMenu.style.display = "none"
     document.getElementsByClassName("card_area")[0].style.pointerEvents = "none"
     document.getElementById("laugh").play()
@@ -34,7 +34,7 @@ function gridMode () {
     newGame()
 }
 
-function normalMode () {
+function normalMode() {
     $startMenu.style.display = "none"
     document.getElementById("instructions").innerHTML = "<p>Have it your way, peasant.</p>"
     document.getElementsByClassName("input_area")[0].style.display = "none"
@@ -58,7 +58,7 @@ class card {
 }
 
 // Assigns color value to cards based on suit index
-function deckCreate () {
+function deckCreate() {
     for (let suit of suits) {
         if (suits.indexOf(suit) % 2) {
             color = "black"
@@ -211,7 +211,7 @@ function moveCheck(selectedCard, clickedCard, clickedCardStack) {
 // Check if move to suit stacks is valid
 function moveCheckSuitStacks(selectedCard, clickedCard) {
     if (clickedCard === 0) { // If click location is empty suit stack or double click
-        if(selectedCard.rank === 1) {
+        if (selectedCard.rank === 1) {
             for (let stack of suitStacks) {
                 if (selectedCard.suit === stack[0]) {
                     return true
@@ -266,14 +266,13 @@ function newGame() {
         ["club", []],
         ["heart", []],
         ["spade", []]
-        ]
+    ]
     deckCreate()
     shuffle()
     dealCards()
     document.querySelectorAll(".card").forEach(ele => ele.addEventListener('click', selectCard))
     document.querySelectorAll(".suit_stack").forEach(ele => ele.addEventListener('click', selectEmptySuitStack))
 }
-
 
 
 /* DOM for card HTML creation */
@@ -302,10 +301,10 @@ $deckHTML.addEventListener("click", function (event) {
 // Select Cards from HTML and translating to game script
 function selectCard(event) {
     if (selectedCardHTML === event.currentTarget) { // if already selected, deselect or move to suit stack
-        for(let stack of suitStacks) { // For double clicking to auto suit stack
+        for (let stack of suitStacks) { // For double clicking to auto suit stack
             if (stack[0] === selectedCard.suit) {
                 let cardDoubleClick = stack[1][stack[1].length - 1]
-                if(!cardDoubleClick) cardDoubleClick = 0
+                if (!cardDoubleClick) cardDoubleClick = 0
                 moveCard(selectedCard, selectedCardStack, cardDoubleClick, stack)
             }
         }
@@ -518,36 +517,42 @@ function submitCSS(event) {
     let gridRow = [Number(/\d{1,2}/.exec(gridRowCommand)[0]), Number(/\/ ?\d{1,2}/.exec(gridRowCommand)[0].substring(1).trim())]
 
     /* Translate grid to position */
-
     // Draw from deck
     if (selectorCSS === "deck" && gridRow[0] === 1 && gridRow[1] === 2 && gridColumn[0] === 2 && gridColumn[1] === 3) {
         drawCards()
-    } else {
-        let cssCard = selectedCardFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
-        let cssCardStack = selectedCardStackFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
-        let clickedCSSCard
-        let clickedCSSStack
-        // Move to main stack
-        for (let i = 0; i < 7; i++) {
-            if (gridRow[0] >= 3 && gridRow[0] < 16 && gridRow[1] > 3 && gridRow[0] <= 16 && gridColumn[0] === (i + 1) && gridColumn[1] === (i + 2)) {
-                if (mainStacks[i][1][gridRow[0] - 4]) {
-                    clickedCSSCard = mainStacks[i][1][gridRow[0] - 4]
-                } else clickedCSSCard = 0
-                clickedCSSStack = mainStacks[i]
-            }
-        }
-        // Move to suit stack
-        for (let i = 0; i < 4; i++) {
-            if (gridRow[0] === 1 && gridRow[1] === 2 && gridColumn[0] === (i + 4) && gridColumn[1] === (i + 5)) {
-                if (suitStacks[i][1][gridColumn[0] - 4]) {
-                    clickedCSSCard = suitStacks[i][1][gridColumn[0] - 4]
-                } else clickedCSSCard = 0
-                clickedCSSStack = suitStacks[i]
-            }
-        }
-        moveCard(cssCard, cssCardStack, clickedCSSCard, clickedCSSStack)
     }
 
+    // Flip last card
+    if (selectorCSS === "blank" && gridRow[0] >= 3 && gridRow[0] < 16 && gridRow[1] > 3 && gridRow[0] <= 16 && gridColumn[0] >= 1 && gridColumn[0] < 8 && gridColumn[1] > 1 && gridColumn[1] <= 8) {
+        console.log(mainStacks[[gridColumn[0] - 1]][1][[gridRow[0] - 3]])
+        flipCard(mainStacks[[gridColumn[0] - 1]][1][[gridRow[0] - 3]])
+    }
+
+    let cssCard = selectedCardFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
+    let cssCardStack = selectedCardStackFromHTML(document.getElementsByClassName(`${selectorCSS} ${rankCSS[0]}`)[0])
+    let clickedCSSCard
+    let clickedCSSStack
+
+    // Move to main stack
+    for (let i = 0; i < 7; i++) {
+        if (gridRow[0] >= 3 && gridRow[0] < 16 && gridRow[1] > 3 && gridRow[0] <= 16 && gridColumn[0] === (i + 1) && gridColumn[1] === (i + 2)) {
+            if (mainStacks[i][1][gridRow[0] - 4]) {
+                clickedCSSCard = mainStacks[i][1][gridRow[0] - 4]
+            } else clickedCSSCard = 0
+            clickedCSSStack = mainStacks[i]
+        }
+    }
+
+    // Move to suit stack
+    for (let i = 0; i < 4; i++) {
+        if (gridRow[0] === 1 && gridRow[1] === 2 && gridColumn[0] === (i + 4) && gridColumn[1] === (i + 5)) {
+            if (suitStacks[i][1][gridColumn[0] - 4]) {
+                clickedCSSCard = suitStacks[i][1][gridColumn[0] - 4]
+            } else clickedCSSCard = 0
+            clickedCSSStack = suitStacks[i]
+        }
+    }
+    moveCard(cssCard, cssCardStack, clickedCSSCard, clickedCSSStack)
 }
 
 // HTML Canvas to draw grid lines
@@ -557,7 +562,7 @@ let canvasElementId = 'grid';
 let canvas = document.getElementById(canvasElementId);
 let ctx = canvas.getContext('2d');
 
-canvas.width  = w;
+canvas.width = w;
 canvas.height = h;
 
 function drawGrid(ctx, w, h) {
