@@ -29,6 +29,7 @@ $normalButton.addEventListener('click', normalMode)
 function gridMode () {
     $startMenu.style.display = "none"
     document.getElementsByClassName("card_area")[0].style.pointerEvents = "none"
+    document.getElementById("laugh").play()
     newGame()
 }
 
@@ -36,6 +37,7 @@ function normalMode () {
     $startMenu.style.display = "none"
     document.getElementById("instructions").innerHTML = "<p>Have it your way, peasant.</p>"
     document.getElementsByClassName("input_area")[0].style.display = "none"
+    document.getElementById("nani").play()
     newGame()
 }
 
@@ -54,16 +56,18 @@ class card {
 }
 
 // Assigns color value to cards based on suit index
-for (let suit of suits) {
-    if (suits.indexOf(suit) % 2) {
-        color = "black"
-    } else {
-        color = "red"
-    }
-    // Pushing cards into deck
-    for (let i = 1; i <= 13; i++) {
-        let newCard = new card(suit, color, i)
-        deck.push(newCard)
+function deckCreate () {
+    for (let suit of suits) {
+        if (suits.indexOf(suit) % 2) {
+            color = "black"
+        } else {
+            color = "red"
+        }
+        // Pushing cards into deck
+        for (let i = 1; i <= 13; i++) {
+            let newCard = new card(suit, color, i)
+            deck.push(newCard)
+        }
     }
 }
 
@@ -228,16 +232,40 @@ function moveCheckMainStacks(selectedCard, clickedCard) {
 // Check if won
 function checkWin() {
     // If each array in each suit has a length of 13
-    if (suitStacks.every(suit => suit[1].length === 13)) console.log("Win")
+    if (suitStacks.every(suit => suit[1].length === 13)) win()
     // If both deck and draw stack are empty, & all cards in main stacks are flipped
     if (deck.length === 0 && drawStack[0][1].length === 0) {
-        if (mainStacks.every(stack => stack[1].every(card => card.flipped))) console.log("Auto Win")
+        if (mainStacks.every(stack => stack[1].every(card => card.flipped))) win()
     }
+}
+
+// New game button on win screen
+let $newGame = document.getElementsByClassName("reload")[0]
+$newGame.addEventListener('click', () => {
+    location.reload()
+})
+
+function win() {
+    document.getElementsByClassName("blur")[0].style.display = "flex"
+    document.getElementsByClassName("win")[0].style.display = "flex"
+    document.getElementById("avengers").play()
 }
 
 // New game function
 function newGame() {
-    shuffle();
+    deck = []
+    drawStack = [
+        ["draw", []]
+    ]
+    mainStacks = []
+    suitStacks = [
+        ["diamond", []],
+        ["club", []],
+        ["heart", []],
+        ["spade", []]
+        ]
+    deckCreate()
+    shuffle()
     dealCards()
     document.querySelectorAll(".card").forEach(ele => ele.addEventListener('click', selectCard))
     document.querySelectorAll(".suit_stack").forEach(ele => ele.addEventListener('click', selectEmptySuitStack))
