@@ -13,6 +13,7 @@ let suitStacks = [
     ["heart", []],
     ["spade", []]
 ]
+let ranks = ["A",2,3,4,5,6,7,8,9,10,"J","Q","K"]
 
 /* Game script */
 // Start menu
@@ -20,7 +21,6 @@ let suitStacks = [
 let $gridButton = document.getElementById("grid-mode")
 let $normalButton = document.getElementById("normal-mode")
 let $startMenu = document.querySelector(".start_menu")
-let $container = document.querySelector(".container")
 
 // DOM listeners
 $gridButton.addEventListener('click', gridMode)
@@ -28,17 +28,15 @@ $normalButton.addEventListener('click', normalMode)
 
 function gridMode () {
     $startMenu.style.display = "none"
-    $container.style.display = "none"
     document.getElementsByClassName("card_area")[0].style.pointerEvents = "none"
+    newGame()
 }
 
 function normalMode () {
     $startMenu.style.display = "none"
-    $container.style.display = "none"
-    document.querySelector(".user_area").style.display = "none"
-    document.getElementsByTagName("main")[0].style.display = "flex"
-    document.getElementsByClassName("card_area")[0].style.justifyContent = "center"
-    document.getElementsByClassName("card_area")[0].style.width = "100%"
+    document.getElementById("instructions").innerHTML = "<p>Have it your way, peasant.</p>"
+    document.getElementsByClassName("input_area")[0].style.display = "none"
+    newGame()
 }
 
 // Create deck of 52 Cards
@@ -77,7 +75,6 @@ function shuffle() {
         deck[i] = deck[j] // Replace ith card with jth card
         deck[j] = temp // Put ith card in jth position
     }
-    console.log(document.getElementById("cardShuffle"))
     document.getElementById("cardShuffle").play() // Plays shuffle audio
 }
 
@@ -99,11 +96,12 @@ function dealCards() {
 // Draw cards from deck into draw stack
 function drawCards() {
     if (deck.length === 0) {
-        if (drawStack[0][1] !== []) {
+        if (drawStack[0][1].length !== 0) {
             deletePreviousCardHTML(drawStack[0][1][drawStack[0][1].length - 1])
             deck = drawStack[0][1].reverse()
             for (let card of deck) card.flipped = 0
             drawStack[0][1] = []
+            document.getElementsByClassName("main_deck")[0].innerHTML = '<img src="assets/card_back.png" alt="card_back" class="card_back"/>'
         }
     } else if (difficulty === "Easy") { // Easy difficulty - draws one card at a time
         drawStack[0][1].push(deck.pop()) // Take top card of deck (last card in array) and push to draw stack
@@ -111,6 +109,9 @@ function drawCards() {
         flipCard(drawStack[0][1][drawStack[0][1].length - 1], drawStack[0])
     }
     /* For hard difficulty */
+    if (deck.length === 0) {
+        document.getElementsByClassName("main_deck")[0].innerHTML = ""
+    }
     document.querySelectorAll(".card").forEach(ele => ele.addEventListener('click', selectCard))
 }
 
@@ -179,7 +180,13 @@ function isStack(stack, cardIndex) {
 
 // Check move
 function moveCheck(selectedCard, clickedCard, clickedCardStack) {
-    if (clickedCard === 0) return true
+    if (clickedCard === 0) {
+        for (let i = 1; i <= 7; i++) {
+            if (selectedCard.rank === 13 && clickedCardStack[0] === `m${i}`)
+                return true
+        }
+        return moveCheckSuitStacks(selectedCard, clickedCard)
+    }
     if (selectedCard.flipped && clickedCard.flipped) { // if selected and clicked cards are both flipped (allowed to move / moved to)
         // Iterate thru the suit stacks, if array is found within suit stacks, move check for suit rules
         for (let suit of suitStacks) {
@@ -196,6 +203,15 @@ function moveCheck(selectedCard, clickedCard, clickedCardStack) {
 
 // Check if move to suit stacks is valid
 function moveCheckSuitStacks(selectedCard, clickedCard) {
+    if (clickedCard === 0) { // If click location is empty suit stack or double click
+        if(selectedCard.rank === 1) {
+            for (let stack of suitStacks) {
+                if (selectedCard.suit === stack[0]) {
+                    return true
+                }
+            }
+        }
+    }
     if (selectedCard.suit === clickedCard.suit) {
         return selectedCard.rank === clickedCard.rank + 1;
     }
@@ -214,7 +230,7 @@ function checkWin() {
     // If each array in each suit has a length of 13
     if (suitStacks.every(suit => suit[1].length === 13)) console.log("Win")
     // If both deck and draw stack are empty, & all cards in main stacks are flipped
-    if (deck === [] && drawStack[0][1] === []) {
+    if (deck.length === 0 && drawStack[0][1].length === 0) {
         if (mainStacks.every(stack => stack[1].every(card => card.flipped))) console.log("Auto Win")
     }
 }
@@ -227,7 +243,7 @@ function newGame() {
     document.querySelectorAll(".suit_stack").forEach(ele => ele.addEventListener('click', selectEmptySuitStack))
 }
 
-newGame()
+
 
 /* DOM for card HTML creation */
 
@@ -254,15 +270,14 @@ $deckHTML.addEventListener("click", function (event) {
 
 // Select Cards from HTML and translating to game script
 function selectCard(event) {
-    if (selectedCardHTML === event.currentTarget) { // if already selected, deselect
-        // For double clicking to auto suit stack
-        // for(let stack of suitStacks) {
-        //     if (stack[0] === selectedCard.suit) {
-        //         let cardDoubleClick = stack[1][stack[1].length - 1]
-        //         if(!cardDoubleClick) cardDoubleClick = 0
-        //         moveCard(selectedCard, selectedCardStack, cardDoubleClick, stack)
-        //     }
-        // }
+    if (selectedCardHTML === event.currentTarget) { // if already selected, deselect or move to suit stack
+        for(let stack of suitStacks) { // For double clicking to auto suit stack
+            if (stack[0] === selectedCard.suit) {
+                let cardDoubleClick = stack[1][stack[1].length - 1]
+                if(!cardDoubleClick) cardDoubleClick = 0
+                moveCard(selectedCard, selectedCardStack, cardDoubleClick, stack)
+            }
+        }
         event.currentTarget.classList.remove('selected')
         selectedCardHTML = 0
         selectedCard = 0
@@ -274,7 +289,7 @@ function selectCard(event) {
             }
         } else { // if flipped
             event.currentTarget.classList.add('selected')
-            selectedCardHTML = event.target
+            selectedCardHTML = event.currentTarget
             selectedCard = selectedCardFromHTML(event.currentTarget)
             selectedCardStack = selectedCardStackFromHTML(event.currentTarget)
         }
@@ -403,10 +418,13 @@ function drawCardHTML(card, cardStack) {
 // Creating cards in html location from card value and array
 function createCardHTML(card, cardStack) {
     let newCard = document.createElement("span")
+    let rank = document.createElement("span")
     if (!card.flipped) {
         newCard.appendChild(createCardBack())
         stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} ${card.color} card notFlipped`
     } else {
+        rank.innerHTML += ranks[card.rank - 1]
+        newCard.appendChild(rank)
         newCard.appendChild(createSymbol(card))
         newCard.innerHTML += `.${card.suit} ${card.rank}`
         stackDivFromStack(cardStack).appendChild(newCard).className = `${card.suit} ${card.rank} ${card.color} card`
@@ -414,14 +432,18 @@ function createCardHTML(card, cardStack) {
 }
 
 function flipCardHTML(card) {
+    let flipCard = cardSpanFromCard(card)
+    let rank = document.createElement("span")
     if (cardSpanFromCard(card).classList.contains("notFlipped")) {
-        cardSpanFromCard(card).classList.remove("notFlipped")
-        cardSpanFromCard(card).firstChild.remove()
-        cardSpanFromCard(card).appendChild(createSymbol(card))
-        cardSpanFromCard(card).innerHTML += `.${card.suit} ${card.rank}`
+        flipCard.classList.remove("notFlipped")
+        flipCard.firstChild.remove()
+        rank.innerHTML += ranks[card.rank - 1]
+        flipCard.appendChild(rank)
+        flipCard.appendChild(createSymbol(card))
+        flipCard.innerHTML += `.${card.suit} ${card.rank}`
     } else {
-        cardSpanFromCard(card).appendChild(createCardBack())
-        cardSpanFromCard(card).classList.add("notFlipped")
+        flipCard.appendChild(createCardBack())
+        flipCard.classList.add("notFlipped")
     }
 }
 

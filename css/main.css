@@ -1,5 +1,8 @@
 body {
   margin: 0;
+  font-family: "Fira Code", monospace;
+  font-size: 10px;
+  height: 100%;
 }
 body .start_menu {
   position: absolute;
@@ -8,43 +11,41 @@ body .start_menu {
   top: 0;
   left: 0;
   background-color: black;
-  opacity: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-}
-body .container {
-  position: absolute;
-  height: 50%;
-  width: 50%;
-  top: 25%;
-  left: 25%;
-  background-color: black;
   z-index: 2;
   color: white;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
 }
-body .container #welcome {
+body .start_menu #welcome {
+  width: 70%;
   font-size: 3rem;
-  margin: 20px;
+  margin-bottom: 70px;
 }
-body .container #choose {
+body .start_menu #choose {
   font-size: 2rem;
-  margin: 20px;
+  margin-bottom: 100px;
+  width: 70%;
 }
-body .container #buttons {
+body .start_menu #buttons {
   display: flex;
+  width: 50%;
   justify-content: space-around;
 }
-body .container #buttons > div {
+body .start_menu #buttons > div {
   background-color: grey;
   border: white 1px solid;
   padding: 10px;
+  border-radius: 5px;
+  width: 30%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
 }
-body .container #buttons > div:hover {
+body .start_menu #buttons > div:hover {
   background-color: #454545;
 }
 body main {
@@ -57,15 +58,40 @@ body main {
 body main .user_area {
   height: 100%;
   grid-column: 1/2;
-  background: lightseagreen;
+  background: #0f5a56;
+  display: flex;
+  flex-direction: column;
+}
+body main .user_area > img {
+  width: 100%;
 }
 body main .user_area #instructions {
-  margin: 20px;
-  color: #6f6f6f;
+  margin: 0 20px;
+  color: #ffffff;
 }
-body main .user_area #input {
+body main .user_area #instructions > p {
+  font-size: 2rem;
+}
+body main .user_area .input_area {
+  margin: 20px 10px;
+  display: flex;
+  justify-content: space-between;
+}
+body main .user_area .input_area #input {
   height: 4rem;
-  margin: 20px;
+  width: 78%;
+}
+body main .user_area .input_area > button {
+  background-color: #e2e2e2;
+  height: 70px;
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body main .user_area .input_area > button > span {
+  width: 80%;
+  font-family: "Fira Code", monospace;
 }
 body main .card_area {
   grid-column: 2/3;
@@ -77,13 +103,15 @@ body main .card_area {
   box-sizing: border-box;
 }
 body main .card_area .main_deck {
+  width: 122px;
   grid-area: 1/1/2/2;
-  background-color: white;
+  background-color: transparent;
   border: 1px solid white;
   border-radius: 5px;
   display: flex;
 }
 body main .card_area .draw_stack {
+  width: 122px;
   grid-area: 1/2/2/3;
   background-color: transparent;
   border: 1px solid white;
@@ -95,14 +123,28 @@ body main .card_area #blank_column {
   background-color: transparent;
 }
 body main .card_area .suit_stack {
+  width: 122px;
   grid-row: 1/2;
   background-color: transparent;
   border: 1px solid white;
   border-radius: 5px;
-  display: flex;
+}
+body main .card_area .suit_stack > .symbols {
+  z-index: 0;
+  height: 25px;
+  width: 25px;
+  position: relative;
+  top: 6px;
+  left: 48px;
+}
+body main .card_area .suit_stack > .card {
+  z-index: 1;
+  position: relative;
+  bottom: 31px;
+  text-align: center;
 }
 body main .card_area .red {
-  color: red;
+  color: #dd2e44;
 }
 body main .card_area .black {
   color: black;
@@ -130,9 +172,14 @@ body main .card_area .main_stack > span {
   border-radius: 5px;
   display: flex;
   align-items: center;
+  z-index: 1;
 }
 .card .symbols {
   height: 25px;
+}
+.card > span {
+  font-family: "Play", sans-serif;
+  font-size: 25px;
 }
 
 .selected {
