@@ -11,7 +11,7 @@ When drawing cards, choose the deck by using the selector ".deck" and "move" to 
 
 Example: to move King of Hearts to its suit stack,
 
-.heart 13 {
+.heart 13 { \n
 grid-column 6 / 7;
 grid-row 1 / 2;
 }
