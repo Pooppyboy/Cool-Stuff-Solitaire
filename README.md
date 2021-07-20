@@ -1,4 +1,6 @@
 # Cool-Stuff-Solitaire
+
+<img src="https://github.com/yjrandom/Cool-Stuff-Solitaire/blob/project-version/css-screenshot.png"/>
 Just like the classic game Solitaire, but with a twist! Move your cards with CSS grid commands, because EVERYONE loves CSS!
 
 # Instructions:
