@@ -1,3 +1,5 @@
+import { card } from "./Deck"
+
 /* Game State */
 let difficulty = "Easy"
 //Decks
@@ -50,31 +52,6 @@ function normalMode() {
 const suits = ["diamond", "club", "heart", "spade"]
 let color = ""
 
-// Create class constructor of card
-class card {
-    constructor(suit, color, rank, flipped = 0) {
-        this.suit = suit;
-        this.rank = rank;
-        this.color = color
-        this.flipped = flipped
-    }
-}
-
-// Assigns color value to cards based on suit index
-function deckCreate() {
-    for (let suit of suits) {
-        if (suits.indexOf(suit) % 2) {
-            color = "black"
-        } else {
-            color = "red"
-        }
-        // Pushing cards into deck
-        for (let i = 1; i <= 13; i++) {
-            let newCard = new card(suit, color, i)
-            deck.push(newCard)
-        }
-    }
-}
 
 // Shuffle Deck
 function shuffle() {
