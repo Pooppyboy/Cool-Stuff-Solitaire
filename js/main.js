@@ -1,21 +1,14 @@
 import { card } from "./Deck"
 
+
+const ranks = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]
+const suits = ["diamond", "club", "heart", "spade"]
+
 /* Game State */
-let difficulty = "Easy"
-//Decks
-/* Arrangement of deck/stacks are from bottom(1st card in array) to top(last card in array) i.e. pop deck to draw top card, pop main stack to move last card */
-let deck = []
-let drawStack = [
-    ["draw", []]
-]
-let mainStacks = []
-let suitStacks = [
-    ["diamond", []],
-    ["club", []],
-    ["heart", []],
-    ["spade", []]
-]
-let ranks = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]
+let difficulty = {
+    easy: {},
+    difficult: {}
+}
 
 /* Game script */
 // Start menu
@@ -48,21 +41,6 @@ function normalMode() {
     newGame()
 }
 
-// Create deck of 52 Cards
-const suits = ["diamond", "club", "heart", "spade"]
-let color = ""
-
-
-// Shuffle Deck
-function shuffle() {
-    for (let i = deck.length - 1; i >= 0; i--) { // For each card in deck
-        let j = Math.floor(Math.random() * (deck.length - 1)) // Assign a random index from 0 to 51
-        let temp = deck[i] // Temp location to store the ith card
-        deck[i] = deck[j] // Replace ith card with jth card
-        deck[j] = temp // Put ith card in jth position
-    }
-    document.getElementById("cardShuffle").play() // Plays shuffle audio
-}
 
 // Deal cards to main stacks
 function dealCards() {
